@@ -23,28 +23,35 @@ int main() {
 	Point2D<int> p4(2,2);
 	
   cout << "points utilisés:" << endl;
-  cout<<p1<<p2<<p3<<p4;
-  //--------------------------------------------------------------------
+  cout<< p1 << p2 << p3 << p4 << endl;
+  
+	//--------------------------------------------------------------------
   //Jeu de tests polygone
   //--------------------------------------------------------------------
-	//creation
+	
+  //creation
   vector<Point2D<int>> monVect = {p1, p2, p3, p4};
-  Polygone<int>* poly1 = new Polygone<int> (monVect);
-	cout << "polygone 1:" << poly1 << endl;
+  Polygone<int> poly1 (monVect);
+	cout << "polygone 1: " << poly1 << endl;
 	
   //creation par recopie
-  Polygone<int>* poly2 = new Polygone<int>(*poly1);
-	cout << "polygone 2 par recopie:" << poly2 << endl;
+  Polygone<int> poly2 (poly1);
+	cout << "polygone 2 par recopie: " << poly2 << endl;
 
 	//translation
-	poly1->translate(10, 10);
+	poly1.translate(10, 10);
 
 	//test translation
-	cout << "polygone 1:" << poly1 << endl;
-	cout << "polygone 2 par recopie:" << poly2 << endl;
+	cout << "polygone 1: " << poly1 << endl;
+	cout << "polygone 2 par recopie: " << poly2 << endl;
+	//--------------------------------------------------------------------
+  
 
-  //Jeu de tests de parcelle 
-  // Parcelle* parcelle = new Parcelle(1, "moi", *poly);
+  
+  //--------------------------------------------------------------------
+  //Jeu de tests parcelle
+  //--------------------------------------------------------------------
 	
-  cout << "\nRe\nfinito del madrido";
+
+	cout << "\nfinito del madrido";
 } 

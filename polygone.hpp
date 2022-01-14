@@ -23,12 +23,12 @@ class Polygone
     Polygone(vector <Point2D<T> > listeSommets);
     Polygone(Polygone<T> const &poly);
 
-    vector<Point2D<T>> getSommets();
+    vector<Point2D<T>> getSommets() const;
     void setSommets(vector<Point2D<T>> listeSommets);
     void addPoint(Point2D<T>);
     void translate(T x , T y );
 
-    friend std::ostream& operator<< <T>(std::ostream &, Polygone<T> const&);
+    friend std::ostream& operator<< <T>(std::ostream &, Polygone const&);
 };
 
 
@@ -52,14 +52,12 @@ Polygone<T>::Polygone(Polygone<T> const &poly){
   this->sommets = poly.sommets;
 }
 
-
-
 //--------------------------------------------------------------------
 //Getteurs et Setteurs
 //--------------------------------------------------------------------
 
 template <typename T>
-vector<Point2D<T>> Polygone<T>::getSommets()
+vector<Point2D<T>> Polygone<T>::getSommets() const
 {
   return this->sommets;
 }
@@ -70,7 +68,6 @@ void Polygone<T>::setSommets(vector<Point2D<T>> listeSommets)
   this->sommets = listeSommets;
 }
 
-
 //--------------------------------------------------------------------
 //Les fonctions
 //--------------------------------------------------------------------
@@ -78,18 +75,17 @@ void Polygone<T>::setSommets(vector<Point2D<T>> listeSommets)
 template <typename T>
 void Polygone<T>::translate(T x , T y )
 {
-  for(auto it = std::begin(sommets); it != std::end(sommets); ++it) {
-    *it.first().translater(x, y);
-	}
+  for(int i = 0 ; i < sommets.size() ; i++) 
+  	sommets[i].translater(x, y);
 }
 
 template <typename T>
-std::ostream& operator<<(std::ostream &o, Polygone<T> const &P)
+std::ostream& operator<<(std::ostream &flux, Polygone<T> const &P)
 {
 	vector <Point2D<T>> monVect = P.getSommets();
 	
-  o << "Polygone a " << monVect.size() << " :" << endl;
-	for(int i : monVect) 
-  	o	<< "sommet " << i << ": " << monVect[i] << endl;
-  return o;
+  flux << "Polygone a " << monVect.size() << " sommets :" << "\n";
+	for(int i = 0 ; i < monVect.size() ; i++) 
+  	flux	<< "sommet " << i << ": " << monVect[i];
+  return flux;
 }

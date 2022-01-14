@@ -121,7 +121,7 @@ void Point2D<T>::translater(string xt, string yt)
 template<typename T>
 std::ostream& operator<< (std::ostream &flux, Point2D<T> const &p )
 {
-  flux << "x: "<< p.getX()  << " ; y: " << p.getY() << std::endl;
+  flux << "[" << p.getX()  << ";" << p.getY() << "]" << std::endl;
   return flux;
 }
 

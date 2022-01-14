@@ -13,7 +13,7 @@ class Parcelle
 		string proprietaire;
 		float surface;
 		int pourcentConstructible;
-		Polygone<int/*, float*/> forme;
+		Polygone<int> forme;
 
     void computeSurface(); //Calcul la valeur de surface a la construction
 		
@@ -21,12 +21,18 @@ class Parcelle
     Parcelle(int num, string prop, Polygone<int/*, float*/> forme);
     Parcelle(Parcelle const &parc);
 
-    int getNumero();
-    string getProprietaire();
-    float getSurface();
-    Polygone<int/*, float*/> getForme();
-    virtual string getType() =0;
+    int getNumero() const;
+    string getProprietaire() const;
+    float getSurface() const;
+    Polygone<int> getForme() const;
+
+    virtual string getType() = 0 const;
 };
+
+
+//--------------------------------------------------------------------
+//Constructeurs
+//--------------------------------------------------------------------
 
 Parcelle::Parcelle(int num, string prop, Polygone<int /*, float*/> forme){
   this->numero = num;
@@ -42,15 +48,37 @@ Parcelle::Parcelle(Parcelle const &parc){
   this->surface = parc.surface;
 }
 
-int Parcelle::getNumero(){
+//--------------------------------------------------------------------
+//Getteurs et Setteurs
+//--------------------------------------------------------------------
+
+int Parcelle::getNumero() const
+{
   return this->numero;
 }
 
-string Parcelle::getProprietaire(){
+string Parcelle::getProprietaire() const
+{
   return this->proprietaire;
 }
 
-void Parcelle::computeSurface(){
+float Parcelle::getSurface() const
+{
+  return this->surface;
+}
+
+Polygone<int> Parcelle::getForme() const
+{
+  return this-> forme
+}
+
+
+//--------------------------------------------------------------------
+//Les fonctions
+//--------------------------------------------------------------------
+
+void Parcelle::computeSurface()
+{
   int n = forme.getSommets().size() - 1;
   vector<Point2D<int>> v;
 
@@ -58,8 +86,4 @@ void Parcelle::computeSurface(){
     surface += v[i].getX()*v[i+1].getY() - v[i+1].getX()*v[i].getY();
   }
   surface = surface / 2;
-}
-
-float Parcelle::getSurface(){
-  return surface;
 }
