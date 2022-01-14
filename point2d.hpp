@@ -30,7 +30,6 @@ class Point2D
 
     T norm2() const;
     void translater(T xt, T yt);
-    void translater(string xt, string yt);
 
     friend std::ostream& operator<< <T>(std::ostream &, Point2D const&);
 };
@@ -107,13 +106,6 @@ void Point2D<T>::translater(T xt, T yt)
   setY(getY() + yt);
 }
 
-template<typename T>
-void Point2D<T>::translater(string xt, string yt)
-{ 
-  setX(getX() + xt);
-  setY(getY() + yt);
-}
-
 //--------------------------------------------------------------------
 //Surcharge d'opérateur
 //--------------------------------------------------------------------
@@ -121,7 +113,7 @@ void Point2D<T>::translater(string xt, string yt)
 template<typename T>
 std::ostream& operator<< (std::ostream &flux, Point2D<T> const &p )
 {
-  flux << "[" << p.getX()  << ";" << p.getY() << "]" << std::endl;
+  flux << "[" << p.getX()  << ";" << p.getY() << "]";
   return flux;
 }
 

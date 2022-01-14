@@ -1,6 +1,7 @@
 #include "point2d.hpp"
 #include "polygone.hpp"
 #include "parcelle.hpp"
+#include "types_parcelle.hpp"
 
 #include <iostream>
 #include <vector>

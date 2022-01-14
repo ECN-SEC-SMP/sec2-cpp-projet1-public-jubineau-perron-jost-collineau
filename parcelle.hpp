@@ -18,7 +18,7 @@ class Parcelle
     void computeSurface(); //Calcul la valeur de surface a la construction
 		
   public:
-    Parcelle(int num, string prop, Polygone<int/*, float*/> forme);
+    Parcelle(int num, string prop, Polygone<int> forme);
     Parcelle(Parcelle const &parc);
 
     int getNumero() const;
@@ -26,7 +26,7 @@ class Parcelle
     float getSurface() const;
     Polygone<int> getForme() const;
 
-    virtual string getType() = 0 const;
+    virtual string getType() = 0;
 };
 
 
@@ -34,7 +34,7 @@ class Parcelle
 //Constructeurs
 //--------------------------------------------------------------------
 
-Parcelle::Parcelle(int num, string prop, Polygone<int /*, float*/> forme){
+Parcelle::Parcelle(int num, string prop, Polygone<int> forme){
   this->numero = num;
   this->proprietaire = prop;
   this->forme = forme;
@@ -50,7 +50,7 @@ Parcelle::Parcelle(Parcelle const &parc){
 
 //--------------------------------------------------------------------
 //Getteurs et Setteurs
-//--------------------------------------------------------------------
+//-------------------------------------------------------------------
 
 int Parcelle::getNumero() const
 {
@@ -69,7 +69,7 @@ float Parcelle::getSurface() const
 
 Polygone<int> Parcelle::getForme() const
 {
-  return this-> forme
+  return this-> forme;
 }
 
 
