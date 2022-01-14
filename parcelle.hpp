@@ -5,10 +5,12 @@
 
 #include "polygone.hpp"
 
+using namespace std;
+
 class Parcelle 
 {
   protected:
-		string type;
+		//string type;
 		int numero;
 		string proprietaire;
 		float surface;
@@ -16,6 +18,7 @@ class Parcelle
 		Polygone<int> forme;
 
     void computeSurface(); //Calcul la valeur de surface a la construction
+    void triOrdreTrigo(vector<Point2D<int>> *vect); //A finir
 		
   public:
     Parcelle(int num, string prop, Polygone<int> forme);
@@ -26,7 +29,7 @@ class Parcelle
     float getSurface() const;
     Polygone<int> getForme() const;
 
-    virtual string getType() = 0;
+    virtual string getType() const = 0;
 };
 
 
@@ -38,6 +41,7 @@ Parcelle::Parcelle(int num, string prop, Polygone<int> forme){
   this->numero = num;
   this->proprietaire = prop;
   this->forme = forme;
+
   computeSurface();
 }
 
@@ -76,14 +80,50 @@ Polygone<int> Parcelle::getForme() const
 //--------------------------------------------------------------------
 //Les fonctions
 //--------------------------------------------------------------------
-
+//@TODO calculer en prenant les sommets dans l'ordre trigonometrique
 void Parcelle::computeSurface()
 {
+  surface = 0;
   int n = forme.getSommets().size() - 1;
-  vector<Point2D<int>> v;
+  vector<Point2D<int>> v = forme.getSommets();
+  //triOrdreTrigo(&v); // A FINIR
 
   for(int i = 0 ; i < n ; i++){
     surface += v[i].getX()*v[i+1].getY() - v[i+1].getX()*v[i].getY();
+    //cout << "surface: " << surface << endl;//DEBUG
   }
   surface = surface / 2;
+  //cout << "surface: " << surface << endl << endl;
+}
+
+/**
+ *  Reorganise le vecteur dans l'ordre trigo
+ *  A FINIR
+ */
+void Parcelle::triOrdreTrigo(vector<Point2D<int>> *vect){
+  /*
+  float currPente, memPente;
+  int n = vect->size();
+  int i=0, y=0; 
+  vector<Point2D<int>> inVect = *vect;		//?
+
+  //Vecteur temporaire qui sera retourne a la fin
+  vector<Point2D<int>> newVect;
+  vector<Point2D<int>>::iterator it;
+
+  //Init du premier element (necessaire pour commencer le tri)
+  newVect.insert(newVect.begin(), inVect[0]);
+
+  for(i = 1 ; i < n ; i++){
+    currPente = inVect[i].getX() / inVect[i].getY();
+
+    y = 0;
+    memPente = newVect[y].getX() / newVect[y].getY();
+    while( (currPente < memPente) && (y < n)){
+      it++;
+      memPente = newVect[y].getX() / newVect[y].getY();
+    }
+    newVect.insert(y, inVect[0]);
+  }
+  */
 }
