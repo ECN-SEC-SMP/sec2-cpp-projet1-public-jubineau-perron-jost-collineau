@@ -13,15 +13,16 @@ using namespace std;
 class Carte
 {
   private:
-    vector<Parcelle> listeParcelles;
+    vector<Parcelle*> listeParcelles;
 
 	public :
 	  Carte(string nomFichier);
 
     void printToFile(string fileName);
     string toString();
+    friend std::ostream& operator<< (ostream &, Carte &);
 
-    friend std::ostream& operator<< (ostream &, Carte const&);
+    void addParcelle(Parcelle* p);
 };
 
 Carte::Carte(string nomFichier){
@@ -59,54 +60,68 @@ Carte::Carte(string nomFichier){
   
 		}
     
-		Polygone<int> poly_zone_2 (vecteur_zone);
-		std::cout << poly_zone_2 << std::endl; //debug
+		Polygone<int> poly_zone (vecteur_zone);
+		//std::cout << poly_zone << std::endl; //debug
 
 		//recup data + creation de la parcelle appropriée
 		string space_delimiter = " ";
-    vector<string> words{};
+    vector<string> words;
     size_t pos = 0;
 		//remove spaces
-    while ((pos = line.find(space_delimiter)) != string::npos) {
-        words.push_back(line.substr(0, pos));
-        line.erase(0, pos + space_delimiter.length());
+    string currentWord = "";
+		int y = 0;
+		for (int i = 0; i < line.size(); i++){
+			if((line[i] == ' ') && (currentWord != "")){
+        words.push_back(currentWord);
+        currentWord = "";
+      }
+      else
+        currentWord += line[i];
+		}
+
+    if(currentWord != ""){
+      words.push_back(currentWord);
     }
 
-		/*//debugging only for loop
-    for (const auto &str : words) {
-        cout << str << endl;
-    }*/
 		if (!strcmp(words[0].c_str(), "ZU")){
-			//ZU maZU();
+      //numéro propriétaire pConstructible surfaceConstruite
 			numParcelle = stoi(words[1].c_str());
 			nomProprio = words[2].c_str();
 			p_surfaceConstructible = stoi(words[3].c_str());
 			surfaceConstruite = stof(words[4].c_str());
-			std::cout << "test" <<std::endl;
+
+			ZU* maZU = new ZU(numParcelle, nomProprio, poly_zone, p_surfaceConstructible, surfaceConstruite);
+			listeParcelles.push_back(maZU);
 		}
 		else if (!strcmp(words[0].c_str(), "ZAU")){
-			//ZAU maZAU();
+      //numéro propriétaire pConstructible
 			numParcelle = stoi(words[1].c_str());
 			nomProprio = words[2].c_str();
 			p_surfaceConstructible = stoi(words[3].c_str());
+
+      ZAU* maZAU = new ZAU(numParcelle, nomProprio, poly_zone, p_surfaceConstructible);
+			listeParcelles.push_back(maZAU);
 		}
 		else if (!strcmp(words[0].c_str(), "ZA")){
-			//ZA maZA();
+      //numéro propriétaire typeCulture
 			numParcelle = stoi(words[1].c_str());
 			nomProprio = words[2].c_str();
 			typeCulture = words[3].c_str();
+
+      ZA* maZA = new ZA(numParcelle, nomProprio, poly_zone, typeCulture);
+			listeParcelles.push_back(maZA);
 		}
 		else if (!strcmp(words[0].c_str(), "ZN")){
-			//ZN maZN();
+      //numéro propriétaire
 			numParcelle = stoi(words[1].c_str());
 			nomProprio = words[2].c_str();
+
+      ZN* maZN = new ZN(numParcelle, nomProprio, poly_zone);
+			listeParcelles.push_back(maZN);
 		}
 		else {
 			cout << "ERREUR PARSING CARTE" << endl;
 		}
-  	std::cout << "numparcelle " << numParcelle << std::endl;
-		std::cout << "nomproprio " << nomProprio << std::endl;
-
   }
   myfile.close();
 }
@@ -124,49 +139,56 @@ ZN 54 Savard
 
 string Carte::toString(){
   string s = "";
+  string type = "";
 
   for(int i=0 ; i < listeParcelles.size() ; i++){
-    //Affichage des parametres de la parcelle en fonction de son type 
-    if(listeParcelles[i].getType() == "ZU"){
-      ZU p = static_cast<ZU&>(listeParcelles[i]);
+    type = listeParcelles[i]->getType();
 
+    //Affichage des parametres de la parcelle en fonction de son type 
+    if(type == "ZU"){
+      ZU* p = dynamic_cast<ZU*>(listeParcelles[i]);
+      
       s += "ZU ";
-      s += to_string(listeParcelles[i].getNumero()) + " \n";
-      s += listeParcelles[i].getProprietaire() + " \n";
-      s += to_string(p.getPourcentageConstructible())+ " \n";
-      s += to_string(p.getSurfaceConstruite()) + "\n";
+      s += to_string(listeParcelles[i]->getNumero()) + " ";
+      s += listeParcelles[i]->getProprietaire() + " ";
+      s += to_string(p->getPourcentageConstructible())+ " ";
+      s += to_string((int) p->getSurfaceConstruite()) + "\n";
     }
-    else if(listeParcelles[i].getType() == "ZN"){
+    else if(type == "ZN"){
       s += "ZN ";
-      s += to_string(listeParcelles[i].getNumero()) + " \n";
-      s += listeParcelles[i].getProprietaire() + " \n";
+      s += to_string(listeParcelles[i]->getNumero()) + " ";
+      s += listeParcelles[i]->getProprietaire() + " \n";
     }
-    else if(listeParcelles[i].getType() == "ZAU"){
-      ZAU p = static_cast<ZAU&>(listeParcelles[i]);
+    else if(type == "ZAU"){
+      ZAU* p = dynamic_cast<ZAU*>(listeParcelles[i]);
       s += "ZAU ";
-      s += to_string(listeParcelles[i].getNumero()) + " \n";
-      s += listeParcelles[i].getProprietaire() + " \n";
-      s += to_string(p.getPourcentageConstructible())+ " \n";
+      s += to_string(listeParcelles[i]->getNumero()) + " ";
+      s += listeParcelles[i]->getProprietaire() + " ";
+      s += to_string((int) p->getPourcentageConstructible())+ " \n";
     }
-    else if(listeParcelles[i].getType() == "ZA"){
-      //indication du chemin d'héritage à prendre Parcelle->ZN->ZA pour eviter les ambiguite
-      ZA p = static_cast<ZA&>(static_cast<ZN&>(listeParcelles[i]));
+    else if(type == "ZA"){
+      //indication du chemin d'héritage à prendre Parcelle->ZN->ZA pour eviter les ambiguites
+      ZA* p = dynamic_cast<ZA*>(dynamic_cast<ZN*>(listeParcelles[i]));
       
       s += "ZA ";
-      s += to_string(listeParcelles[i].getNumero()) + " \n";
-      s += listeParcelles[i].getProprietaire() + " \n";
-      s += p.getTypeCulture();
+      s += to_string(listeParcelles[i]->getNumero()) + " ";
+      s += listeParcelles[i]->getProprietaire() + " ";
+      s += p->getTypeCulture() + " \n";
     }
-    else /* ZN */{
+    else if(type == "ZN"){
       s += "ZN ";
-      s += to_string(listeParcelles[i].getNumero()) + " \n";
-      s += listeParcelles[i].getProprietaire() + " \n";
+      s += to_string(listeParcelles[i]->getNumero()) + " ";
+      s += listeParcelles[i]->getProprietaire() + " \n";
     }
-    vector <Point2D<int>> monVect = listeParcelles[i].getForme().getSommets();
-	
+    else{
+      s += "ERREUR DE TYPE\n";
+    }
+
+    vector <Point2D<int>> monVect = listeParcelles[i]->getForme().getSommets();
     for(int i = 0 ; i < monVect.size() ; i++){
       s	+= "[" + to_string(monVect[i].getX()) + ";" + to_string(monVect[i].getY()) + "]" + " ";
     }
+    s += "\n";
   }
   return s;
 }
@@ -175,4 +197,14 @@ void Carte::printToFile(string fileName){
 	std::ofstream out(fileName);
   out << this->toString();
   out.close();
+}
+
+std::ostream& operator<< (ostream &os, Carte &c){
+  os << c.toString();
+  return os;
+}
+
+
+void Carte::addParcelle(Parcelle* p){
+  listeParcelles.push_back(p);
 }

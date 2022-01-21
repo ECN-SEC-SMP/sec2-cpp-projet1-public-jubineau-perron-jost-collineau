@@ -5,7 +5,7 @@
 
 #include "parcelle.hpp"
 
-class Constructible : public Parcelle
+class Constructible : virtual public Parcelle
 {
   protected:
     int pourcentageConstructible;
@@ -18,6 +18,8 @@ class Constructible : public Parcelle
     int getPourcentageConstructible(){
       return this->pourcentageConstructible;
     }
+
+		string getType() const {return this->type;}
 };
 
 /*
@@ -28,12 +30,16 @@ class ZU : public Constructible
   protected:
 	  float surfaceConstruite;
   public:
-    ZU(int num, string prop, Polygone<int> forme, float _surfaceConstruite) : Constructible(num, prop, forme)
+    void setType(){this->type = "ZU";}
+
+    ZU(int num, string prop, Polygone<int> forme, float _pourcentageConstructible, float _surfaceConstruite) : Parcelle(num, prop, forme), Constructible(num, prop, forme)
     {
-      this->pourcentageConstructible = 80;
+      this->setType();
+      this->pourcentageConstructible = _pourcentageConstructible;
       this->surfaceConstruite = _surfaceConstruite;
     }
- 		string getType() const {return "ZU";}
+
+		string getType() const {return this->type;}
 
     float getSurfaceConstruite() const {return surfaceConstruite;}
     
@@ -42,11 +48,11 @@ class ZU : public Constructible
       float surface_constructible = 0;
       //Le 200 est a remplacer par surface lorsque le calcul de la surface
       //de la parcelle sera termine
-      float surface_constructible_totale = ((float)pourcentageConstructible / 100) * 250;
+      float surface_constructible_totale = ((float)pourcentageConstructible / 100) * surface;
 
       if( surface_constructible_totale >= surfaceConstruite)
       {
-        surface_constructible = (((float)pourcentageConstructible / 100) * 250) - this->surfaceConstruite;
+        surface_constructible = (((float)pourcentageConstructible / 100) * surface) - surfaceConstruite;
       }
   
       return surface_constructible;
@@ -61,19 +67,19 @@ class ZU : public Constructible
 class ZAU : public Constructible
 {
   public:
-		ZAU(int num, string prop, Polygone<int> forme) : Constructible(num, prop, forme)
+    void setType(){this->type = "ZAU";}
+
+		ZAU(int num, string prop, Polygone<int> forme, float _pourcentageConstructible) : Parcelle(num, prop, forme), Constructible(num, prop, forme)
     {
-      this-> pourcentageConstructible = 60;    
+      this-> pourcentageConstructible = _pourcentageConstructible;
+      this->setType(); 
     }
 
-		string getType() const {return "ZAU";}
+		string getType() const {return this->type;}
 
     //Calcul la valeur de surface constructible
     float surfaceConstructible(void) {
-      //Le 200 est a remplacer par surface lorsque le calcul de la surface
-      //de la parcelle sera termine
-      float surface_constructible = (float(pourcentageConstructible) / 100) * 250; 
-      return surface_constructible;
+      return (float(pourcentageConstructible) / 100) * surface;
     }
 
 		friend std::ostream& operator<< (std::ostream &, ZAU const&);
@@ -82,11 +88,16 @@ class ZAU : public Constructible
 /*
  *	Zones Naturelles et Forestières (ZN)
  */
-class ZN : public Parcelle
+class ZN : virtual public Parcelle
 {
   public:
-		ZN(int num, string prop, Polygone<int> forme) : Parcelle(num, prop, forme){}
-		string getType() const {return "ZN";}
+    void setType(){this->type = "ZN";}
+
+		ZN(int num, string prop, Polygone<int> forme) : Parcelle(num, prop, forme){
+      this->setType();
+    }
+		string getType() const {return this->type;}
+    void setType(string t){this->type = t;}
 
     friend std::ostream& operator<< (std::ostream &, ZN const&);
 };
@@ -99,17 +110,21 @@ class ZA : public ZN, public Constructible
   protected:
 		string typeCulture;
   public:
+    void setType(){this->type = "ZA";}
+    
   	ZA(int num, string prop, Polygone<int> forme, string typeCult) 
-			:ZN(num, prop, forme)
-			,Constructible(num, prop, forme)
+			: Parcelle(num, prop, forme), Constructible(num, prop, forme), ZN(num, prop, forme)
     {
       this->typeCulture = typeCult;
       this->pourcentageConstructible = 10;
+      this->setType();
   	}
 		float surfaceConstructible(void) {
+      //cast pour evité les ambiguites
+      ZN p = static_cast<ZN>(*this);
       //Le 250 est a remplacer par surface lorsque le calcul de la surface
       //de la parcelle sera termine
-      float surface_constructible = (float(pourcentageConstructible) / 100) * 250; 
+      float surface_constructible = (float(pourcentageConstructible) / 100) * p.getSurface(); 
 
       if(surface_constructible >= 200)
       {
@@ -118,16 +133,11 @@ class ZA : public ZN, public Constructible
 			return surface_constructible;
     }
 
-		string getType() const {return "ZA";}
+		string getType() const {return this->type;}
     string getTypeCulture() const {return typeCulture;}
 
-    //Pour eviter les ambiguites (Ne fonctionne pas)
-    /*
-    using Constructible::getNumero;
-    using Constructible::getForme;
-    using Constructible::getProprietaire;
-    using Constructible::getSurface;
-    */
+
+
 		friend std::ostream& operator<< (std::ostream &, ZA &);		
 };
 

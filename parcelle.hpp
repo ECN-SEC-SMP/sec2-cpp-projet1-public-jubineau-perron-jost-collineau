@@ -16,6 +16,7 @@ class Parcelle
 		float surface;
 		int pourcentConstructible;
 		Polygone<int> forme;
+    string type;
 
     void computeSurface(); //Calcul la valeur de surface a la construction
     void triOrdreTrigo(vector<Point2D<int>> *vect); //A finir
@@ -29,7 +30,8 @@ class Parcelle
     float getSurface() const;
     Polygone<int> getForme() const;
 
-    virtual string getType() const = 0;
+    string getType() const;
+    virtual void setType() =0;
 };
 
 
@@ -73,35 +75,31 @@ float Parcelle::getSurface() const
 
 Polygone<int> Parcelle::getForme() const
 {
-  return this-> forme;
+  return this->forme;
 }
 
+string Parcelle::getType() const
+{
+  return this->type;
+}
 
 //--------------------------------------------------------------------
 //Les fonctions
 //--------------------------------------------------------------------
-//@TODO calculer en prenant les sommets dans l'ordre trigonometrique
 void Parcelle::computeSurface()
 {
-  // surface = 0;
-  // int n = forme.getSommets().size() - 1;
-  // vector<Point2D<int>> v = forme.getSommets();
-  // //triOrdreTrigo(&v); // A FINIR
+  surface = 0;
+  int n = forme.getSommets().size() - 1;
+  vector<Point2D<int>> v = forme.getSommets();
 
-  // for(int i = 0 ; i < n ; i++){
-  //   surface += v[i].getX()*v[i+1].getY() - v[i+1].getX()*v[i].getY();
-  //   //cout << "surface: " << surface << endl;//DEBUG
-  // }
-  // // surface = surface / 2;
-
-  surface = 250;
-
-  //cout << "surface: " << surface << endl << endl;
+  for(int i = 0 ; i < n ; i++){
+    surface += v[i].getX()*v[i+1].getY() - v[i+1].getX()*v[i].getY();
+  }
+  surface = surface / 2;
 }
 
 /**
- *  Reorganise le vecteur dans l'ordre trigo
- *  A FINIR
+ *  Reorganise le vecteur dans l'ordre trigo (optionnel)
  */
 void Parcelle::triOrdreTrigo(vector<Point2D<int>> *vect){
   /*
