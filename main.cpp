@@ -16,13 +16,12 @@ int main() {
   cout << "   @GatienJost"			<< endl; 
   cout << "   @HugoCollineau" 	<< endl;
   cout << "   @YounPerron" 			<< endl;
-  cout << "   @BastienJubineau"	<< endl << endl;
-  cout << "------------------" << endl;
+  cout << "   @BastienJubineau"	<< endl;
 
 	//--------------------------------------------------------------------
   //Jeu de tests polygone
   //--------------------------------------------------------------------
-  
+  cout << endl <<  "------------------" << endl;
   cout << "Jeu de tests polygone"	<< endl;
   cout << "---------------------"	<< endl << endl;
   Point2D<int> p1(1,1);  

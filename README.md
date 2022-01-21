@@ -1,6 +1,8 @@
-CPP - TP NOTE
+# CPP - TP4 NOTÉ
 
-PERRON  JOST   COLLINEAU  JUBINEAU# projet1-2022-jost-collineau-jubineau-perron
+PERRON  JOST   COLLINEAU  JUBINEAU  
 
-https://github.com/ECN-SEC-SMP/sec2-cpp-projet1-public-jubineau-perron-jost-collineau
-# sec2-cpp-projet1-public-jubineau-perron-jost-collineau
+Avancement : Partie 5 (Carte) finie
+
+https://github.com/ECN-SEC-SMP/sec2-cpp-projet1-public-jubineau-perron-jost-collineau  
+sec2-cpp-projet1-public-jubineau-perron-jost-collineau
