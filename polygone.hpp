@@ -84,7 +84,6 @@ std::ostream& operator<<(std::ostream &flux, Polygone<T> const &P)
 {
 	vector <Point2D<T>> monVect = P.getSommets();
 	
-  flux << "Polygone : ";
 	for(int i = 0 ; i < monVect.size() ; i++) 
   	flux	<< monVect[i] << " " ;
   return flux;

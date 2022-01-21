@@ -2,6 +2,7 @@
 #include "polygone.hpp"
 #include "parcelle.hpp"
 #include "types_parcelle.hpp"
+//#include "carte.hpp"
 
 #include <iostream>
 #include <vector>
@@ -91,17 +92,31 @@ int main() {
   //--------------------------------------------------------------------
   //Jeu de tests parcelle
   //--------------------------------------------------------------------
-	ZU zone_urbaine(1, "Musk", poly_zone_1, 9);
+	ZU zone_urbaine(1, "Musk", poly_zone_1, 50);
 	cout <<  zone_urbaine << endl;
 
-  //ZAU zone_a_urbaniser(2, "Biden", poly_zone_2);
+  // cout << "La surface construite de la zone urbaine est : " << endl;
+  // cout << zone_urbaine.getSurfaceConstruite() << endl;
+  // cout << "Calcul de la surface constructible restante :" << endl; 
+  // cout << "(la surface construcible totale est 80% de la parcelle)" << endl;
+  // float surface_constructible = zone_urbaine.surfaceConstructible();
+  // cout << "La surface construcible restante est : " << surface_constructible << endl;
+  
 
-  ZA zone_agricole(3, "Guillaume", poly_zone_3, "trèflex");
-  cout <<  zone_agricole << endl;
+  // ZAU zone_a_urbaniser(2, "Biden", poly_zone_2);
+  // cout <<  zone_a_urbaniser << endl;
+  // cout << "Calcul de la surface constructible :" << endl; 
+  // cout << "(la surface construcible totale est 80% de la parcelle)" << endl;
+  // float surface_constructible2 = zone_a_urbaniser.surfaceConstructible();
+  // cout << "La surface construcible restante est : " << surface_constructible << endl;
 
-  //ZN zone_naturelle(4, "Jancovici", poly_zone_4, "roseaux");
+  // ZA zone_agricole(3, "Guillaume", poly_zone_3, "trefles");
+  // cout <<  zone_agricole << endl;
+
+  // ZN zone_naturelle(4, "Jancovici", poly_zone_4);
+	// cout <<  zone_naturelle << endl;
 
   cout << "---------------------"	<< endl << endl;
-
+	//Carte maCarte("Parcelles_short.txt");
 	cout << "\nfinito del madrido";
 } 

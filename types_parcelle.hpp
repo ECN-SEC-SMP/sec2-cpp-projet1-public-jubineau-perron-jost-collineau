@@ -27,7 +27,6 @@ class ZU : public Constructible
   public:
     ZU(int num, string prop, Polygone<int> forme, float _surfaceConstruite) : Constructible(num, prop, forme){
       this->surfaceConstruite = _surfaceConstruite;
-
     }
  		string getType() const {return "ZU";}
 
@@ -36,9 +35,11 @@ class ZU : public Constructible
     //Calcul la valeur de surface constructible
     float surfaceConstructible(void) {
       float surface_constructible = 0;
-      if(((p_surfaceConstructible / 100) * surface) >= surfaceConstruite)
+      //Le 200 est a remplacer par surface lorsque le calcul de la surface
+      //de la parcelle sera termine
+      if(((p_surfaceConstructible / 100) * 200) >= surfaceConstruite)
       {
-        surface_constructible = ((p_surfaceConstructible / 100) * surface) - surfaceConstruite; 
+        surface_constructible = ((p_surfaceConstructible / 100) * 200) - surfaceConstruite; 
       }
       else {surface_constructible = 0;}
       return surface_constructible;
@@ -61,7 +62,9 @@ class ZAU : public Constructible
 
     //Calcul la valeur de surface constructible
     float surfaceConstructible(void) {
-      float surface_constructible = (p_surfaceConstructible / 100) * surface; 
+      //Le 200 est a remplacer par surface lorsque le calcul de la surface
+      //de la parcelle sera termine
+      float surface_constructible = (p_surfaceConstructible / 100) * 200; 
       return surface_constructible;
     }
 
@@ -74,10 +77,9 @@ class ZAU : public Constructible
 class ZN : public Parcelle
 {
   protected:
-    string typeCulture;
+  
   public:
 		ZN(int num, string prop, Polygone<int> forme, string typeCult) : Parcelle(num, prop, forme){
-      this->typeCulture = typeCult;
   	}
 		string getType() const {return "ZN";}
 
@@ -102,6 +104,12 @@ class ZA : public ZN, public Constructible
 			return 0;
     }
 		string getType() const {return "ZA";}
+
+    //Pour eviter les ambiguites (Ne fonctionne pas)
+    using Constructible::getNumero;
+    using Constructible::getForme;
+    using Constructible::getProprietaire;
+    using Constructible::getSurface;
 		friend std::ostream& operator<< (std::ostream &, ZA &);		
 };
 
@@ -116,7 +124,7 @@ std::ostream& operator<< (std::ostream &flux, ZU &p )
 {
   flux << "Parcelle n°" << p.getNumero() << " :" << endl
        << "  Type : " << p.getType() << endl
-       << "  " << p.getForme() << endl
+       << "  Polygone : " << p.getForme() << endl
        << "  Proprietaire : " << p.getProprietaire() << endl
        << "  Surface : " << p.getSurface() << endl
        << "  % constructible : " << p.surfaceConstructible() << "%" << endl
@@ -130,11 +138,13 @@ std::ostream& operator<< (std::ostream &flux, ZU &p )
  */
 std::ostream& operator<< (std::ostream &flux, ZA &p )
 {
-  flux << "Parcelle n°" << p.getNumero() << " :" << endl
+  //cast static pour les fonctions ambigues
+  ZN _p = static_cast<ZN&>(p);
+  flux << "Parcelle n°" << _p.getNumero() << " :" << endl
        << "  Type : " << p.getType() << endl
-       << "  " << p.getForme() << endl
-       << "  Proprietaire : " << p.getProprietaire() << endl
-       << "  Surface : " << p.getSurface() << endl
+       << "  Polygone : " << _p.getForme() << endl
+       << "  Proprietaire : " << _p.getProprietaire() << endl
+       << "  Surface : " << _p.getSurface() << endl
        << "  % constructible : " << p.surfaceConstructible() << "%" << endl;
 			 //TODO A COMPLETER
   return flux;
@@ -145,11 +155,11 @@ std::ostream& operator<< (std::ostream &flux, ZA &p )
  */
 std::ostream& operator<< (std::ostream &flux, ZN &p )
 {
-  /*flux << "Parcelle n°" << p.getNumero() << " :" << endl
+  flux << "Parcelle n°" << p.getNumero() << " :" << endl
        << "  Type : " << p.getType() << endl
-       << "  " << p.getForme() << endl
+       << "  Polygone : " << p.getForme() << endl
        << "  Proprietaire : " << p.getProprietaire() << endl
-       << "  Surface : " << p.getSurface() << endl;*/
+       << "  Surface : " << p.getSurface() << endl;
   return flux;
 }
 
@@ -158,6 +168,11 @@ std::ostream& operator<< (std::ostream &flux, ZN &p )
  */
 std::ostream& operator<< (std::ostream &flux, ZAU &p )
 {
-  //flux << "[" << p.getX()  << ";" << p.getY() << "]";
+  flux << "Parcelle n°" << p.getNumero() << " :" << endl
+       << "  Type : " << p.getType() << endl
+       << "  Polygone : " << p.getForme() << endl
+       << "  Proprietaire : " << p.getProprietaire() << endl
+       << "  Surface : " << p.getSurface() << endl;
+       << "  % constructible : " << p.surfaceConstructible() << "%" << endl;
   return flux;
 }
