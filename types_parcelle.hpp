@@ -14,6 +14,10 @@ class Constructible : public Parcelle
 
     //Calcul la valeur de surface constructible
     virtual float surfaceConstructible() =0;
+
+    int getPourcentageConstructible(){
+      return this->pourcentageConstructible;
+    }
 };
 
 /*
@@ -23,9 +27,10 @@ class ZU : public Constructible
 {
   protected:
 	  float surfaceConstruite;
-    int p_surfaceConstructible = 80;
   public:
-    ZU(int num, string prop, Polygone<int> forme, float _surfaceConstruite) : Constructible(num, prop, forme){
+    ZU(int num, string prop, Polygone<int> forme, float _surfaceConstruite) : Constructible(num, prop, forme)
+    {
+      this->pourcentageConstructible = 80;
       this->surfaceConstruite = _surfaceConstruite;
     }
  		string getType() const {return "ZU";}
@@ -37,11 +42,13 @@ class ZU : public Constructible
       float surface_constructible = 0;
       //Le 200 est a remplacer par surface lorsque le calcul de la surface
       //de la parcelle sera termine
-      if(((p_surfaceConstructible / 100) * 200) >= surfaceConstruite)
+      float surface_constructible_totale = ((float)pourcentageConstructible / 100) * 250;
+
+      if( surface_constructible_totale >= surfaceConstruite)
       {
-        surface_constructible = ((p_surfaceConstructible / 100) * 200) - surfaceConstruite; 
+        surface_constructible = (((float)pourcentageConstructible / 100) * 250) - this->surfaceConstruite;
       }
-      else {surface_constructible = 0;}
+  
       return surface_constructible;
     }
 
@@ -53,18 +60,19 @@ class ZU : public Constructible
  */
 class ZAU : public Constructible
 {
-  protected:
-    int p_surfaceConstructible = 80;
   public:
-		ZAU(int num, string prop, Polygone<int> forme) : Constructible(num, prop, forme){
+		ZAU(int num, string prop, Polygone<int> forme) : Constructible(num, prop, forme)
+    {
+      this-> pourcentageConstructible = 60;    
     }
+
 		string getType() const {return "ZAU";}
 
     //Calcul la valeur de surface constructible
     float surfaceConstructible(void) {
       //Le 200 est a remplacer par surface lorsque le calcul de la surface
       //de la parcelle sera termine
-      float surface_constructible = (p_surfaceConstructible / 100) * 200; 
+      float surface_constructible = (float(pourcentageConstructible) / 100) * 250; 
       return surface_constructible;
     }
 
@@ -76,11 +84,8 @@ class ZAU : public Constructible
  */
 class ZN : public Parcelle
 {
-  protected:
-  
   public:
-		ZN(int num, string prop, Polygone<int> forme, string typeCult) : Parcelle(num, prop, forme){
-  	}
+		ZN(int num, string prop, Polygone<int> forme) : Parcelle(num, prop, forme){}
 		string getType() const {return "ZN";}
 
     friend std::ostream& operator<< (std::ostream &, ZN const&);
@@ -95,21 +100,34 @@ class ZA : public ZN, public Constructible
 		string typeCulture;
   public:
   	ZA(int num, string prop, Polygone<int> forme, string typeCult) 
-			:ZN(num, prop, forme, typeCult) 
-			,Constructible(num, prop, forme){
+			:ZN(num, prop, forme)
+			,Constructible(num, prop, forme)
+    {
       this->typeCulture = typeCult;
+      this->pourcentageConstructible = 10;
   	}
 		float surfaceConstructible(void) {
-      //TODO A CALCULER !!!!!
-			return 0;
+      //Le 250 est a remplacer par surface lorsque le calcul de la surface
+      //de la parcelle sera termine
+      float surface_constructible = (float(pourcentageConstructible) / 100) * 250; 
+
+      if(surface_constructible >= 200)
+      {
+        surface_constructible = 200;
+      }
+			return surface_constructible;
     }
+
 		string getType() const {return "ZA";}
+    string getTypeCulture() const {return typeCulture;}
 
     //Pour eviter les ambiguites (Ne fonctionne pas)
+    /*
     using Constructible::getNumero;
     using Constructible::getForme;
     using Constructible::getProprietaire;
     using Constructible::getSurface;
+    */
 		friend std::ostream& operator<< (std::ostream &, ZA &);		
 };
 
@@ -127,9 +145,9 @@ std::ostream& operator<< (std::ostream &flux, ZU &p )
        << "  Polygone : " << p.getForme() << endl
        << "  Proprietaire : " << p.getProprietaire() << endl
        << "  Surface : " << p.getSurface() << endl
-       << "  % constructible : " << p.surfaceConstructible() << "%" << endl
-       << "  surface construite : " << p.getSurfaceConstruite() << endl
-       << "  surface a construire restante : " << p.surfaceConstructible() - p.getSurfaceConstruite() << endl;
+       << "  % constructible : " << p.getPourcentageConstructible() << "%" << endl
+       << "  Surface construite : " << p.getSurfaceConstruite() << endl
+       << "  Surface a construire restante : " << p.surfaceConstructible() << endl;
   return flux;
 }
 
@@ -145,8 +163,9 @@ std::ostream& operator<< (std::ostream &flux, ZA &p )
        << "  Polygone : " << _p.getForme() << endl
        << "  Proprietaire : " << _p.getProprietaire() << endl
        << "  Surface : " << _p.getSurface() << endl
-       << "  % constructible : " << p.surfaceConstructible() << "%" << endl;
-			 //TODO A COMPLETER
+       << "  TypeCulture : " << p.getTypeCulture() << endl
+       << "  % constructible : " << p.getPourcentageConstructible() << "%" << endl
+       << "  Surface constructible (limite a 200m² sinon 10%) : " << p.surfaceConstructible() << endl;
   return flux;
 }
 
@@ -172,7 +191,8 @@ std::ostream& operator<< (std::ostream &flux, ZAU &p )
        << "  Type : " << p.getType() << endl
        << "  Polygone : " << p.getForme() << endl
        << "  Proprietaire : " << p.getProprietaire() << endl
-       << "  Surface : " << p.getSurface() << endl;
-       << "  % constructible : " << p.surfaceConstructible() << "%" << endl;
+       << "  Surface : " << p.getSurface() << endl
+       << "  % constructible : " << p.getPourcentageConstructible() << "%" << endl
+       << "  Surface a construire restante : " << p.surfaceConstructible() << endl;
   return flux;
 }

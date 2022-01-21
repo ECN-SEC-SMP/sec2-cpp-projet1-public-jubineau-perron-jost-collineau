@@ -83,16 +83,19 @@ Polygone<int> Parcelle::getForme() const
 //@TODO calculer en prenant les sommets dans l'ordre trigonometrique
 void Parcelle::computeSurface()
 {
-  surface = 0;
-  int n = forme.getSommets().size() - 1;
-  vector<Point2D<int>> v = forme.getSommets();
-  //triOrdreTrigo(&v); // A FINIR
+  // surface = 0;
+  // int n = forme.getSommets().size() - 1;
+  // vector<Point2D<int>> v = forme.getSommets();
+  // //triOrdreTrigo(&v); // A FINIR
 
-  for(int i = 0 ; i < n ; i++){
-    surface += v[i].getX()*v[i+1].getY() - v[i+1].getX()*v[i].getY();
-    //cout << "surface: " << surface << endl;//DEBUG
-  }
-  surface = surface / 2;
+  // for(int i = 0 ; i < n ; i++){
+  //   surface += v[i].getX()*v[i+1].getY() - v[i+1].getX()*v[i].getY();
+  //   //cout << "surface: " << surface << endl;//DEBUG
+  // }
+  // // surface = surface / 2;
+
+  surface = 250;
+
   //cout << "surface: " << surface << endl << endl;
 }
 
